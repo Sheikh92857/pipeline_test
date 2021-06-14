@@ -15,7 +15,7 @@ pipeline {
                 }
             }
             steps {
-                git 'https://github.com/RanaRanvijaySingh/FlutterStarter.git'
+                git 'https://github.com/Sheikh92857/pipeline_test'
             }
         }
         stage('Build') {
@@ -42,11 +42,11 @@ pipeline {
                 expression { return params.current_status == "closed" && params.merged == true }
             }
             steps {
-                appCenter apiToken: 'f51cf29ba6b2234a84c999bc37348db84624c615',
-                        ownerName: 'ranaranvijaysingh9-gmail.com',
-                        appName: 'Flutter-Crystal-Cruise',
+                appCenter apiToken: 'b5bf5ef5307d32c0ea47da2257d2634443b66f4a',
+                        ownerName: 'hassan57928@gmail.com',
+                        appName: 'pipeline_test',
                         pathToApp: 'build/app/outputs/apk/debug/app-debug.apk',
-                        distributionGroups: 'flutter-crystal-cruise'
+                        distributionGroups: 'pippeline_test'
             }
         }
     }
