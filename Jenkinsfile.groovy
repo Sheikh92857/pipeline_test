@@ -29,25 +29,25 @@ pipeline {
             '''
             }
         }
-        stage('Test') {
-            when {
-                expression { return params.current_status == "closed" && params.merged == true }
-            }
-            steps {
-                sh 'flutter test'
-            }
-        }
-        stage('Publish') {
-            when {
-                expression { return params.current_status == "closed" && params.merged == true }
-            }
-            steps {
-                appCenter apiToken: 'b5bf5ef5307d32c0ea47da2257d2634443b66f4a',
-                        ownerName: 'hassan57928@gmail.com',
-                        appName: 'pipeline_test',
-                        pathToApp: 'build/app/outputs/apk/debug/app-debug.apk',
-                        distributionGroups: 'AlphaTester'
-            }
-        }
+        // stage('Test') {
+        //     when {
+        //         expression { return params.current_status == "closed" && params.merged == true }
+        //     }
+        //     steps {
+        //         sh 'flutter test'
+        //     }
+        // }
+        // stage('Publish') {
+        //     when {
+        //         expression { return params.current_status == "closed" && params.merged == true }
+        //     }
+        //     steps {
+        //         appCenter apiToken: 'b5bf5ef5307d32c0ea47da2257d2634443b66f4a',
+        //                 ownerName: 'hassan57928@gmail.com',
+        //                 appName: 'pipeline_test',
+        //                 pathToApp: 'build/app/outputs/apk/debug/app-debug.apk',
+        //                 distributionGroups: 'AlphaTester'
+        //     }
+        // }
     }
 }
