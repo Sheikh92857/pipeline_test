@@ -46,7 +46,7 @@ pipeline {
                         ownerName: 'hassan57928@gmail.com',
                         appName: 'pipeline_test',
                         pathToApp: 'build/app/outputs/apk/debug/app-debug.apk',
-                        distributionGroups: 'pippeline_test'
+                        distributionGroups: 'AlphaTester'
             }
         }
     }
