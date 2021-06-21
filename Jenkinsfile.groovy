@@ -21,7 +21,7 @@ pipeline {
                     make boot_emulator
                     make wait_for_emulator_ready
                     
-                    flutter drive --target=test_driver/login.dart
+                    flutter drive --target=test_codepipeline/main.dart
                     '''
                 }
             }
@@ -44,7 +44,7 @@ pipeline {
                         echo "Booting simulator..."
                         make boot_ios_simulator
                         
-                        flutter drive --target=test_driver/login.dart
+                        flutter drive --target=test_codepipeline/main.dart
                         '''
                     }
                 }
