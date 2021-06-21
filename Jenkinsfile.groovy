@@ -1,53 +1,66 @@
 pipeline {
-    agent any
-
     stages {
-        stage('Code pull') {
-            when {
-                expression {
-                    String s = "NOT MERGED"
-                    if(params.merged) {
-                        s = "MERGED"
-                    }
-                    echo "PR CURRENT STATUS: ${params.current_status}"
-                    echo "PR MERGED STATUS: $s"
-                    return params.current_status == "closed" && params.merged == true
+        stage('Clean project') {
+            steps {
+                sh 'flutter clean'
+            }
+        }
+
+        stage('Update dependencies') {
+            steps {
+                sh 'flutter packages get'
+            }
+        }
+      
+        stage('Run tests on Android') {
+            steps {
+                lock(resource: 'emulator') {
+                    sh '''
+                    echo "Creating and booting emulator..."
+                    make create_emulator
+                    make boot_emulator
+                    make wait_for_emulator_ready
+                    
+                    flutter drive --target=test_driver/login.dart
+                    '''
                 }
             }
-            steps {
-                git 'https://github.com/Sheikh92857/pipeline_test'
+            post {
+                  always {
+                      sh '''
+                        echo "Shutting down and deleting emulator..."
+                        make teardown_emulator
+                        make delete_emulator
+                      ''' 
+                  }
             }
         }
-        stage('Build') {
-            when {
-                expression { return params.current_status == "closed" && params.merged == true }
-            }
+
+        stage('Run tests on iOS') {
             steps {
-                sh '''
-            #!/bin/sh
-            flutter build apk --debug
-            '''
+                script {
+                    lock(resource: 'iOS simulator flutter') {
+                        sh '''
+                        echo "Booting simulator..."
+                        make boot_ios_simulator
+                        
+                        flutter drive --target=test_driver/login.dart
+                        '''
+                    }
+                }
+            }
+            post {
+                always {
+                    sh "make teardown_simulator"
+                }
             }
         }
-        // stage('Test') {
-        //     when {
-        //         expression { return params.current_status == "closed" && params.merged == true }
-        //     }
-        //     steps {
-        //         sh 'flutter test'
-        //     }
-        // }
-        // stage('Publish') {
-        //     when {
-        //         expression { return params.current_status == "closed" && params.merged == true }
-        //     }
-        //     steps {
-        //         appCenter apiToken: 'b5bf5ef5307d32c0ea47da2257d2634443b66f4a',
-        //                 ownerName: 'hassan57928@gmail.com',
-        //                 appName: 'pipeline_test',
-        //                 pathToApp: 'build/app/outputs/apk/debug/app-debug.apk',
-        //                 distributionGroups: 'AlphaTester'
-        //     }
-        // }
+    }
+    post {
+        success {
+            script {
+                //archive artifacts
+            }
+        }
     }
 }
